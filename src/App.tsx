@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  FormEventHandler,
+  FunctionComponent,
+  useState,
+} from 'react';
+import axios from 'axios';
+import { restService } from './rest-service';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppStore } from './store/app-store';
+import { languageSlice } from './store/language-slice';
+import { loginSlice } from './store/login-slice';
 
-function App() {
+interface AppProps {}
+
+const App: FunctionComponent<AppProps> = (props: AppProps) => {
+  const login = useSelector<AppStore, boolean>((state) => state.login);
+  const language = useSelector<AppStore, string>((state) => state.language);
+
+  const dispatch = useDispatch();
+
+  const changeLanguage = () => {
+    if (language === 'English') {
+      dispatch(languageSlice.actions.setLanguage('Kannada'));
+    } else {
+      dispatch(languageSlice.actions.setLanguage('English'));
+    }
+  };
+
+  const toggleLogin = () => {
+    if (login) {
+      dispatch(loginSlice.actions.logout());
+    } else {
+      dispatch(loginSlice.actions.login());
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <>
+      <div className='container p-5'>
+        <h3>Learning React</h3>
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Language: <span className='fw-bold'>{language}</span> login:{' '}
+          <span className='fw-bold'>{login ? 'Login' : 'Logout'}</span>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+        <hr />
+        <button className='btn btn-primary me-2' onClick={changeLanguage}>
+          Change Language
+        </button>
+        <button className='btn btn-warning me-2' onClick={toggleLogin}>
+          Toggle Login
+        </button>
+      </div>
+    </>
   );
-}
+};
 
 export default App;
