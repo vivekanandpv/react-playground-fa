@@ -18,14 +18,12 @@ const App: FunctionComponent<AppProps> = (props: AppProps) => {
   const login = useSelector<AppStore, boolean>((state) => state.login);
   const language = useSelector<AppStore, string>((state) => state.language);
 
+  const languages = ['English', 'Russian', 'German', 'Japanese', 'French'];
+
   const dispatch = useDispatch();
 
-  const changeLanguage = () => {
-    if (language === 'English') {
-      dispatch(languageSlice.actions.setLanguage('Kannada'));
-    } else {
-      dispatch(languageSlice.actions.setLanguage('English'));
-    }
+  const changeLanguage: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+    dispatch(languageSlice.actions.setLanguage(e.target.value));
   };
 
   const toggleLogin = () => {
@@ -45,12 +43,22 @@ const App: FunctionComponent<AppProps> = (props: AppProps) => {
           <span className='fw-bold'>{login ? 'Login' : 'Logout'}</span>
         </p>
         <hr />
-        <button className='btn btn-primary me-2' onClick={changeLanguage}>
-          Change Language
-        </button>
-        <button className='btn btn-warning me-2' onClick={toggleLogin}>
-          Toggle Login
-        </button>
+        <div className='row'>
+          <div className='col'>
+            <select className='form-select' onChange={changeLanguage}>
+              {languages.map((l, i) => (
+                <option value={l} key={i}>
+                  {l}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className='col'>
+            <button className='btn btn-warning me-2' onClick={toggleLogin}>
+              Toggle Login
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );
